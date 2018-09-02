@@ -3,7 +3,7 @@ module.exports = (app) => {
     
     app.post('/dashboard', dashboard.create);
     app.get('/dashboard', dashboard.findAll);
-    app.get('/dashboard/:dashboard', dashboard.findOne);
-    app.put('/dashboard/:dashboard', dashboard.update);
-    app.delete('/dashboard/:dashboard', dashboard.delete);
+    app.get('/dashboard/:dashboardId', dashboard.findOne);
+    app.put('/dashboard/:dashboardId', dashboard.update);
+    app.delete('/dashboard/:dashboardId', dashboard.delete);
 }

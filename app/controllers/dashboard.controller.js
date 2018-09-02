@@ -37,17 +37,79 @@ exports.findAll = (req, res) => {
     });
 };
 
-// Find a single note with a noteId
+// Find a single dashboard with a dashboardId
 exports.findOne = (req, res) => {
-
+    Dashboard.findById(req.params.dashboardId)
+    .then(dashboard => {
+        if(!dashboard) {
+            return res.status(404).send({
+                message: "Dashboard not found with id " + req.params.dashboardId
+            });            
+        }
+        res.send(dashboard);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "dashboard not found with id " + req.params.dashboardId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error retrieving dashboard with id " + req.params.dashboardId
+        });
+    });
 };
 
-// Update a note identified by the noteId in the request
+// Update a dashboard identified by the dashboardId in the request
 exports.update = (req, res) => {
+    // Validate Request
+    if(!req.body.content) {
+        return res.status(400).send({
+            message: "dashboard content can not be empty"
+        });
+    }
 
+    // Find dashboard and update it with the request body
+    Dashboard.findByIdAndUpdate(req.params.dashboardId, {
+        title: req.body.title || "Untitled dashboard",
+        content: req.body.content
+    }, {new: true})
+    .then(dashboard => {
+        if(!dashboard) {
+            return res.status(404).send({
+                message: "dashboard not found with id " + req.params.dashboardId
+            });
+        }
+        res.send(dashboard);
+    }).catch(err => {
+        if(err.kind === 'ObjectId') {
+            return res.status(404).send({
+                message: "dashboard not found with id " + req.params.dashboardId
+            });                
+        }
+        return res.status(500).send({
+            message: "Error updating dashboard with id " + req.params.dashboardId
+        });
+    });
 };
 
-// Delete a note with the specified noteId in the request
+// Delete a dashboard with the specified dashboardId in the request
 exports.delete = (req, res) => {
-
+    dashboard.findByIdAndRemove(req.params.dashboardId)
+    .then(dashboard => {
+        if(!dashboard) {
+            return res.status(404).send({
+                message: "dashboard not found with id " + req.params.dashboardId
+            });
+        }
+        res.send({message: "dashboard deleted successfully!"});
+    }).catch(err => {
+        if(err.kind === 'ObjectId' || err.name === 'NotFound') {
+            return res.status(404).send({
+                message: "dashboard not found with id " + req.params.dashboardId
+            });                
+        }
+        return res.status(500).send({
+            message: "Could not delete dashboard with id " + req.params.dashboardId
+        });
+    });
 };
